@@ -1,27 +1,25 @@
-const axios = require("axios");
-const URL = global.config.ApiUrl;
 module.exports.config = {
-    name: "bot",
-    version: "1",
+    name: "supportgc",
+    version: "1.0",
     hasPermission: 0,
     credits: "Sakibin.Imtiaz",
-    description: "Simsimi",
-    usages: "Message",
-    commandCategory: "ai",
+    description: "Send support group links",
+    usages: "/supportgc",
+    commandCategory: "group",
     cooldowns: 5
 };
  
-module.exports.run = async ({ api, event, args }) => {
+module.exports.run = async ({ api, event }) => {
     try {
-        let message = args.join(" ");
-        if (!message) {
-            return api.sendMessage(`Hi, I am an A.i(Artificial Intelligence)🧠, which is made by @Sakibin Sinha.\nUse "/bot (question?)".✅`, event.threadID, event.messageID);
-        }
-  
-  
-        const response = await axios.get(`https://gpt-19zs.onrender.com/gpt4?prompt=${message}`);
-        const respond = response.data.message;
-        api.sendMessage(respond, event.threadID, event.messageID);
+        // Define the support group links here
+        const supportLink1 = "https://m.me/j/AbavzQcqzAHRAtmH/"; // Replace with your actual group link
+        const supportLink2 = "https://www.facebook.com/groups/418505760810575"; // Replace with your actual group link
+
+        // Message to send with the links
+        const message = `🔗 Here are the support group links:\n\n1. Messanger Group:\n${supportLink1}\n2. Community Group:\n${supportLink2}\n\nFeel free to join for any help or queries!`;
+
+        // Send the message with the links
+        api.sendMessage(message, event.threadID, event.messageID);
     } catch (error) {
         console.error("An error occurred:", error);
         api.sendMessage("Oops! Something went wrong.", event.threadID, event.messageID);
