@@ -29,8 +29,8 @@ module.exports.handleEvent = async function ({ api, event }) {
 
   api.sendMessage("🕟 | Upgrading image quality..", threadID, async () => {
     try {
-      const response = await axios.get(`https://hazee-upscale.replit.app/upscale?url=${encodeURIComponent(photoUrl)}&face_enhance=true`);
-      const processedImageURL = response.data.hazescale;
+      const response = await axios.get(`https://hiroshi-api.onrender.com/image/upscale?url=${encodeURIComponent(photoUrl)}`);
+      const processedImageURL = response.data; // the returned URL directly
       const img = (await axios.get(processedImageURL, { responseType: "arraybuffer" })).data;
 
       fs.writeFileSync(pathie, Buffer.from(img, 'binary'));
