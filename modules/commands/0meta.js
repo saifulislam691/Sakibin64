@@ -2,7 +2,7 @@ const axios = require("axios");
 const API = global.config.ApiUrl;
 
 module.exports.config = {
-    name: "meta",
+    name: "metax",
     version: "1.0",
     hasPermission: 0,
     credits: "Sakibin",
