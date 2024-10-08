@@ -1,44 +1,46 @@
-module.exports.config = {
-  usePrefix: true,
-  name: "supportgroup",
-  version: "1.1.0",
-  hasPermssion: 0,
-  credits: `SAKIBIN`,
-  description: `Add the user who runs the command to the support group.`,
-  commandCategory: `admin`,
-  usages: `..`,
-  cooldowns: 5
+const chalk = require('chalk');
+module.exports.config = { 
+    usePrefix: true,
+    name: "mygroup",
+    version: "1.0.1",
+    hasPermssion: 0,
+    hasPermission: 0,
+    credits: "SAKIBIN",
+    description: "Automatically adds user to a predefined group",
+    commandCategory: "group",
+    usages: "/mygroup",
+    cooldowns: 5
 };
 
-module.exports.run = async function({ api, event, Threads }) {
-  const { senderID, messageID } = event;
-  const supportGroupThreadID = `568304112847373`; // Support group thread ID
-  const botID = api.getCurrentUserID();
-  const out = msg => api.sendMessage(msg, senderID, messageID); // Sends message to the user who runs the command
-  const failMessage = `Failed to add you to the support group. ❎`;
+module.exports.onLoad = () => {
+  console.log(chalk.bold.hex("#00c300").bold("==== SUCCESSFULLY LOADED THE MYGROUP COMMAND ====="));
+}
+
+module.exports.run = async function({ api, event }) {
+  var { threadID, messageID, senderID } = event;
+  
+  // Replace this with the group ID you want to automatically add the user to
+  const myGroupID = "568304112847373"; 
 
   try {
-    const threadInfo = await Threads.getInfo(supportGroupThreadID);
-    const { participantIDs, approvalMode, adminIDs } = threadInfo;
-    const isParticipant = participantIDs.includes(senderID);
-    const isBotAdmin = adminIDs.some(admin => admin.id === botID);
+    // Get group info to check if the user is already in the group
+    var threadInfo = await api.getThreadInfo(myGroupID);
+    var { participantIDs, approvalMode, adminIDs } = threadInfo;
 
-    if (isParticipant) {
-      return out(`You are already in the support group.`);
+    if (participantIDs.includes(senderID)) {
+      return api.sendMessage(`You are already in the group ${threadInfo.threadName}.`, threadID, messageID);
     }
 
-    // Try to add the user to the support group
-    await api.addUserToGroup(senderID, supportGroupThreadID);
+    // Add the user to the group
+    api.addUserToGroup(senderID, myGroupID);
 
-    // Check if approval mode is on and the bot is not an admin
-    if (approvalMode && !isBotAdmin) {
-      return out(`You've been added to the approval list. ✅`);
+    // Check if the group has approval mode enabled
+    if (approvalMode && !adminIDs.some(item => item.id === api.getCurrentUserID())) {
+      return api.sendMessage("You have been added to the group's approval list. Please wait for approval.", threadID, messageID);
+    } else {
+      return api.sendMessage(`You have been successfully added to the group ${threadInfo.threadName}.`, threadID, messageID);
     }
-
-    return out(`Successfully added you to the support group: ${threadInfo.threadName}. ✅`);
-
   } catch (error) {
-    // Handle any error that occurs during the process
-    return out(`I can't add you, Join⬇️\n💌 | Our ChatGroup link: https://m.me/j/AbZWnuyr11jBO71i/\n👥 | Our community Group: https://m.facebook.com/groups/418505760810575`);
+    return api.sendMessage(`An error occurred while trying to add you to the group:\n\n${error}`, threadID, messageID);
   }
-};
+}
