@@ -3,7 +3,6 @@ module.exports.config = {
     usePrefix: true,
     name: "mygroup",
     version: "1.0.1",
-    hasPermssion: 0,
     hasPermission: 0,
     credits: "SAKIBIN",
     description: "Automatically adds user to a predefined group",
@@ -27,12 +26,13 @@ module.exports.run = async function({ api, event }) {
     var threadInfo = await api.getThreadInfo(myGroupID);
     var { participantIDs, approvalMode, adminIDs } = threadInfo;
 
-    if (participantIDs.includes(senderID)) {
+    // Check if senderID (the user who invoked the command) is already in the group
+    if (participantIDs && participantIDs.includes(senderID)) {
       return api.sendMessage(`You are already in the group ${threadInfo.threadName}.`, threadID, messageID);
     }
 
     // Add the user to the group
-    api.addUserToGroup(senderID, myGroupID);
+    await api.addUserToGroup(senderID, myGroupID);
 
     // Check if the group has approval mode enabled
     if (approvalMode && !adminIDs.some(item => item.id === api.getCurrentUserID())) {
@@ -43,4 +43,4 @@ module.exports.run = async function({ api, event }) {
   } catch (error) {
     return api.sendMessage(`An error occurred while trying to add you to the group:\n\n${error}`, threadID, messageID);
   }
-}
+};
