@@ -133,14 +133,14 @@ registerFont(__dirname + `/cache/CaviarDreams.ttf`, {
     ctx.font = "55px time";
     ctx.fillText("𝗦𝗮𝗸𝗶𝗯𝗶𝗻 𝗦𝗶𝗻𝗵𝗮", 930, 540)
     ctx.fillText("𝗦𝗮𝗸𝗶𝗯𝗶𝗻 𝗦𝗶𝗻𝗵𝗮", 930, 610)
-    ctx.fillText("Sakibn Sinha", 930, 690)
+    ctx.fillText("𝗦𝗮𝗸𝗶𝗯𝗶𝗻 𝗦𝗶𝗻𝗵𝗮", 930, 690)
     ctx.restore();
     ctx.save();
     ctx.beginPath();
     const imageBuffer = canvas.toBuffer();
    fs.writeFileSync(pathImg, imageBuffer);
   return api.sendMessage({
-    body: `Server Information\n\nChip: ${chips}.\nProcessing Speed: ${speed}MHz.\n\nTotal Memory: ${byte2mb(os.totalmem())}.\nUsed: ${byte2mb(os.freemem())} (${(os.freemem() * 100 / os.totalmem()).toFixed()}%).\n\nBot is running up ${hours} hours ${minutes} minute ${seconds} seconds.\n\n❯ Total users: ${global.data.allUserID.length}\n❯ Total Group: ${global.data.allThreadID.length}\n❯ CPU in use: ${pidusage.cpu.toFixed(1)}%\n❯ Ram in use: ${byte2mb(pidusage.memory)}\n❯ Ping: ${Date.now() - timeStart}ms\n❯ Character ID: ${id}\n❯ Admin Faceboook:\n      https://www.facebook.com/profile.php?id=100065445284007&mibextid=ZbWKwL`,
+    body: `✧Information My Chip ${chips} processing Speed ${speed}MHz. My total memory ${byte2mb(os.totalmem())} and using ${byte2mb(os.freemem())} (${(os.freemem() * 100 / os.totalmem()).toFixed()}%). System is running up ${hours} hours ${minutes} minute ${seconds} seconds.\n\n❯ Total users: ${global.data.allUserID.length}\n❯ Total Group: ${global.data.allThreadID.length}\n❯ CPU in use: ${pidusage.cpu.toFixed(1)}%\n❯ Ram in use: ${byte2mb(pidusage.memory)}\n❯ Ping: ${Date.now() - timeStart}ms\n❯ Character ID: ${id}\n❯ Admin: https://m.facebook.com/imsakibin007`,
     attachment: fs.createReadStream(pathImg)
   },
     event.threadID,
