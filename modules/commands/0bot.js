@@ -12,7 +12,7 @@ module.exports.config = {
 module.exports.run = async ({ api, event }) => {
     try {
         // Define the support group links here
-        const supportLink1 = "https://m.me/j/AbavzQcqzAHRAtmH/"; // Replace with your actual group link
+        const supportLink1 = "https://m.me/j/AbbHIMrqGdGG8ZK7/"; // Replace with your actual group link
         const supportLink2 = "https://www.facebook.com/groups/418505760810575"; // Replace with your actual group link
 
         // Message to send with the links
