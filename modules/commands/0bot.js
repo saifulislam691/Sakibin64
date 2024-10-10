@@ -1,5 +1,5 @@
 module.exports.config = {
-    name: "supportgc",
+    name: "mygroup",
     version: "1.0",
     hasPermission: 0,
     credits: "Sakibin.Imtiaz",
