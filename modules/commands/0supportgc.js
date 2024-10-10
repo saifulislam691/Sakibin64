@@ -1,9 +1,9 @@
 const chalk = require('chalk');
 module.exports.config = { 
     usePrefix: true,
-    name: "mygroup",
+    name: "supportgc",
     version: "1.0.1",
-    hasPermssion: 2,
+    hasPermssion: 0,
     credits: "SAKIBIN",
     description: "Join the Bot boxes are in",
     commandCategory: "group",
