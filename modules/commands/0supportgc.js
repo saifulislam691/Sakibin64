@@ -3,44 +3,79 @@ module.exports.config = {
     usePrefix: true,
     name: "mygroup",
     version: "1.0.1",
-    hasPermission: 0,
+    hasPermssion: 2,
     credits: "SAKIBIN",
-    description: "Automatically adds user to a predefined group",
+    description: "Join the Bot boxes are in",
     commandCategory: "group",
-    usages: "/mygroup",
+    usages: "",
     cooldowns: 5
 };
 
+const allowedGroups = ['9346480742035558', '5683041128473731']; // Only allow these groups
+
 module.exports.onLoad = () => {
-  console.log(chalk.bold.hex("#00c300").bold("==== SUCCESSFULLY LOADED THE MYGROUP COMMAND ====="));
+  console.log(chalk.bold.hex("#00c300").bold("==== SUCCESSFULLY LOADED THE JOIN COMMAND ====="));
 }
 
-module.exports.run = async function({ api, event }) {
-  var { threadID, messageID, senderID } = event;
-  
-  // Replace this with the group ID you want to automatically add the user to
-  const myGroupID = "568304112847373"; 
+module.exports.handleReply = async function({ api, event, handleReply, Threads }) {
+  var { threadID, messageID, senderID, body } = event;
+  var { ID } = handleReply;
+
+  if (!body || !parseInt(body)) {
+    return api.sendMessage('Your selection must be a number.', threadID, messageID);
+  }
+
+  if ((parseInt(body) - 1) > ID.length || (parseInt(body) - 1) < 0) {
+    return api.sendMessage("Your pick is not on the list", threadID, messageID);
+  }
 
   try {
-    // Get group info to check if the user is already in the group
-    var threadInfo = await api.getThreadInfo(myGroupID);
+    var selectedGroupID = ID[body - 1];
+    var threadInfo = await Threads.getInfo(selectedGroupID);
     var { participantIDs, approvalMode, adminIDs } = threadInfo;
 
-    // Check if senderID (the user who invoked the command) is already in the group
-    if (participantIDs && participantIDs.includes(senderID)) {
-      return api.sendMessage(`You are already in the group ${threadInfo.threadName}.`, threadID, messageID);
+    if (participantIDs.includes(senderID)) {
+      return api.sendMessage(`You are already in this group.`, threadID, messageID);
     }
 
-    // Add the user to the group
-    await api.addUserToGroup(senderID, myGroupID);
+    api.addUserToGroup(senderID, selectedGroupID);
 
-    // Check if the group has approval mode enabled
-    if (approvalMode && !adminIDs.some(item => item.id === api.getCurrentUserID())) {
-      return api.sendMessage("You have been added to the group's approval list. Please wait for approval.", threadID, messageID);
+    if (approvalMode === true && !adminIDs.some(item => item.id === api.getCurrentUserID())) {
+      return api.sendMessage("Added you to the group's approval list. Please wait for approval.", threadID, messageID);
     } else {
-      return api.sendMessage(`You have been successfully added to the group ${threadInfo.threadName}.`, threadID, messageID);
+      return api.sendMessage(`You have been added to the group ${threadInfo.threadName}.`, threadID, messageID);
     }
   } catch (error) {
     return api.sendMessage(`An error occurred while trying to add you to the group:\n\n${error}`, threadID, messageID);
   }
-};
+}
+
+module.exports.run = async function({ api, event, Threads }) {
+  var { threadID, messageID, senderID } = event;
+  var msg = `> Here is Support GC List:\n\n`, number = 0, ID = [];
+
+  // Get info for only the allowed groups
+  for (var groupID of allowedGroups) {
+    try {
+      var threadInfo = await Threads.getInfo(groupID);
+      number++;
+      msg += `${number}. ${threadInfo.threadName}\n`;
+      ID.push(groupID);
+    } catch (error) {
+      console.log(`Failed to retrieve group info for ${groupID}:`, error);
+    }
+  }
+
+  msg += `\n👉 Reply to this message to the group you want to join.`;
+  
+  return api.sendMessage(msg, threadID, (error, info) => {
+    if (error) return console.log(error);
+
+    global.client.handleReply.push({
+      name: this.config.name,
+      author: senderID,
+      messageID: info.messageID,
+      ID: ID      
+    });
+  }, messageID);
+}
