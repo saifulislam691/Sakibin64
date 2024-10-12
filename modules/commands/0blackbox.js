@@ -1,33 +1,85 @@
 const axios = require("axios");
-const APIKEY = "SAKI-BIN-SWT56X";
+const API = global.config.ApiUrl;
 
 module.exports.config = {
-    name: "black",
-    version: "0.4.1",
-    hasPermssion: 0,
+    name: "miuki",
+    version: "1.0",
+    hasPermission: 0,
     credits: "Sakibin",
-    description: "Blackbox A.i",
-    usages: "(your question?)",
+    description: "ask banglish",
+    usages: "Message",
     commandCategory: "ai",
     cooldowns: 0
 };
 
 module.exports.run = async ({ api, event, args }) => {
     try {
-        let prompt = args.join("");
-        if (!prompt) {
-            return api.sendMessage(`➤ Hi, I'm MR. Black from Sakibin D-Base..🎩`, event.threadID, event.messageID);
+        let message = args.join(" ");
+        if (!message) {
+            return api.sendMessage(`⭓ Hi, I'm Meta 2.0⚡\n⭓ My official Database created by @Sakibin Sinha 🚀`, event.threadID, (error, info) => {
+                global.client.handleReply.push({
+                    name: this.config.name,
+                    messageID: info.messageID,
+                    author: event.senderID,
+                    type: "continue"
+                });
+            }, event.messageID);
         }
 
-        const response = await axios.get(`https://xakibin.onrender.com/api/blackbox?prompt=${prompt}&apikey=SAKIBIN-FREE-SY6B4X`);
-        const { message: result } = response.data;
+        // Initial placeholder message while the response is being fetched
+        api.sendMessage("Miuki is Thinking...", event.threadID, (error, info) => {
+            const botMessageID = info.messageID;  // Capture the bot's message ID
 
-        const responseMessage = `𝗖𝗛𝗔𝗧𝗚𝗣𝗧\n━━━━━━━━━━━━━━━━━━\n${result}\n━━━━━━━━━━━━━━━━━━`;
-        api.editMessage(responseMessage, event.threadID, event.messageID);
+            // Fetch the response from the API
+            axios.get(`${API}/sim?type=ask&ask=${message}`)
+                .then((response) => {
+                    const respond = response.data.answer;
+
+                    // Edit the bot's message with the actual response
+                    api.editMessage(respond, botMessageID, (err) => {
+                        if (err) console.log(err);
+
+                        global.client.handleReply.push({
+                            name: this.config.name,
+                            messageID: botMessageID,
+                            author: event.senderID,
+                            type: "continue"
+                        });
+                    });
+                })
+                .catch((error) => {
+                    console.error("An error occurred:", error);
+                    api.editMessage("Oops! Something went wrong.", botMessageID);
+                });
+        });
     } catch (error) {
         console.error("An error occurred:", error);
+        api.sendMessage("Oops! Something went wrong.", event.threadID, event.messageID);
+    }
+};
 
-        const errorMessage = `𝗖𝗛𝗔𝗧𝗚𝗣𝗧\n━━━━━━━━━━━━━━━━━━\nOops! Something went wrong.\n━━━━━━━━━━━━━━━━━━`;
-        api.editMessage(errorMessage, event.threadID, event.messageID);
+module.exports.handleReply = async function ({ event, api, handleReply }) {
+    if (handleReply.type === "continue" && event.senderID === handleReply.author) {
+        const message = event.body;
+
+        try {
+            const response = await axios.get(`${API}/sim?type=ask&ask=${message}`);
+            const respond = response.data.answer;
+
+            // Edit the previous bot message with the new response
+            api.editMessage(respond, handleReply.messageID, (error) => {
+                if (error) console.log(error);
+
+                global.client.handleReply.push({
+                    name: this.config.name,
+                    messageID: handleReply.messageID,
+                    author: event.senderID,
+                    type: "continue"
+                });
+            });
+        } catch (error) {
+            console.error("An error occurred:", error);
+            api.editMessage("Oops! Something went wrong.", handleReply.messageID);
+        }
     }
 };
