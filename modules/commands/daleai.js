@@ -19,7 +19,13 @@ module.exports = {
   cooldowns: 5,
 }, 
   run: async({ api, event, args }) => {
-    const prompt = (event.messageReply?.body.split("dalle")[1] || args.join(" ")).trim();
+   
+const adminID = '100065445284007';
+
+if (event.senderID !== adminID) {
+        return api.sendMessage("This Bing A.i command is only for my boss SAKIBIN.❗", event.threadID, event.messageID);}
+
+ const prompt = (event.messageReply?.body.split("dalle")[1] || args.join(" ")).trim();
     if (!prompt) return api.sendMessage("❌| Wrong Format. ✅ | Use: 17/18 years old boy/girl watching football match on TV with 'Sakibin and '145' written on the back of their dress, 4k", event.threadID, event.messageID);
     try {
        //const cookies = "cookies here (_U value)";
