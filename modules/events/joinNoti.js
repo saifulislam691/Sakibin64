@@ -68,11 +68,11 @@ module.exports.run = async function({ api, event }) {
 			if (existsSync(pathGif)) formPush = { body: msg, attachment: createReadStream(pathGif), mentions }
 			else if (randomPath.length != 0) {
 				const pathRandom = join(__dirname, "cache", "joinGif", "randomgif", `${randomPath[Math.floor(Math.random() * randomPath.length)]}`);
-				formPush = { body: msg, attachment: createReadStream(pathRandom), mentions }
+				formPush = `${msg}`
 			}
-			else formPush = { body: msg, mentions }
+			else formPush = `${msg}`
 
-			return api.shareContact(formPush, userID, threadID);
+			return api.shareContact(msg, userID, threadID);
 		} catch (e) { return console.log(e) };
 	}
 }
