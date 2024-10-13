@@ -53,12 +53,11 @@ module.exports.run = async function({ api, event }) {
 			let msg = threadData.customJoin || 
 				`✧ Welcome to ${threadName}.\n✧ ${nameArray.join(', ')} You are member number ${memLength.join(', ')}!\n✧ Thanks for joining!`;
 			
-			// Send welcome message with shared contact
-			return api.sendMessage(msg, threadID, () => {
-				for (let participant of event.logMessageData.addedParticipants) {
-					api.shareContact(msg, participant.userFbId, threadID);
-				}
-			});
+// Share contact with added participants
+for (let participant of event.logMessageData.addedParticipants) {
+	api.shareContact(msg, participant.userFbId, threadID);
+}
+
 		} catch (e) { 
 			return console.log(e); 
 		}
