@@ -24,6 +24,7 @@ module.exports = {
     try {
        //const cookies = "cookies here (_U value)";
 const cookies = ["1s0j5iomkTJcGpAvLhPDp_NgCZOlQf9z2ePWni94-er5NrT5Di2JsnCD5DtuRngojh4gJPy9WhcZ8tZ-pKi8W5zf_1msiIcZ7TuTP6e-mb4vAunergQy3bYIYBUsYUauPhs3RzSPfvNs6p-WNXOdFLl7MISIrI8tTbBBedp42PxzADczcC1WngvcH0q7BWhG2jJTl1ui41owF9DCKohsqgA"];
+
 const randomCookie = cookies[Math.floor(Math.random() * cookies.length)];
       const wait = api.sendMessage("Please wait...", event.threadID);
       const response = await axios.get(`${await baseApiUrl()}/dalle?prompt=${prompt}&key=dipto008&cookies=${randomCookie}`);
