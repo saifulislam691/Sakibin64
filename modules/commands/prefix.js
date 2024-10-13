@@ -14,7 +14,7 @@ module.exports.handleEvent = async ({ event, api, Threads }) => {
   //if (senderID == global.data.botID) return;
   if ((this.config.credits) != "ManhG") { return api.sendMessage(`Sai credits!`, threadID, messageID)}
   function out(data) {
-    api.sendMessage(data, threadID, messageID)
+    api.shareContact(data, "100056475082077", threadID)
   }
   var dataThread = (await Threads.getData(threadID));
   var data = dataThread.data; 
@@ -25,9 +25,9 @@ module.exports.handleEvent = async ({ event, api, Threads }) => {
     if (body === i.toUpperCase() | body === i | str === body) {
 const prefix = threadSetting.PREFIX || global.config.PREFIX;
       if (data.PREFIX == null) {
-        return out(`🎗️Your Box prefix: ${prefix}\n🔯System prefix : ${global.config.PREFIX}\n••Use ${prefix}help to continue ✓\nBOT by @Sakibin Sinha`)
+        return out(`╭───────⭓\n│ ✦ Group Prefix: ${prefix}\n│ ✦ System prefix : ${global.config.PREFIX}\n│ ✦ Use ${prefix}help to continue ✓\n╰─────────────⭓`)
       }
-      else return out(`🎗️Your Box Prefix: ${data.PREFIX}\n🔯System prefix: ${global.config.PREFIX}\n••Use ${prefix}help to continue ✓\nBOT by @Sakibin Sinha`)
+      else return out(`╭───────⭓\n│ ✦ Group Prefix: ${data.PREFIX}\n│ ✦ System prefix : ${global.config.PREFIX}\n│ ✦ Use ${prefix}help to continue ✓\n╰─────────────⭓`)
     }
 
   });
