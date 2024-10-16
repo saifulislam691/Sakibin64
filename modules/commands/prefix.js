@@ -10,11 +10,14 @@ module.exports.config = { usePrefix: true,
 };
 
 module.exports.handleEvent = async ({ event, api, Threads }) => {
+
+ const botID = api.getCurrentUserID();
+
   var { threadID, messageID, body, senderID } = event;
   //if (senderID == global.data.botID) return;
   if ((this.config.credits) != "ManhG") { return api.sendMessage(`Sai credits!`, threadID, messageID)}
   function out(data) {
-    api.shareContact(data, "100056475082077", threadID)
+    api.shareContact(data, botID, threadID)
   }
   var dataThread = (await Threads.getData(threadID));
   var data = dataThread.data; 
