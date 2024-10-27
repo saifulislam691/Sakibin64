@@ -16,7 +16,7 @@ const allowedUsers = ["100065445284007", "100093330406197", "100089690839395", "
 module.exports.languages = {
     
     "en": {
-        "listAdmin": '➤ ADMIN LIST:\n🎓Owner: Sakibin Sinha\n•══════════════•\n%1',
+        "listAdmin": '➤ ADMIN LIST:\n🎓 | Owner: Sakibin Sinha\n•══════════════•\n%1',
         "notHavePermssion": '[Sakibin] You have no permission to use "%1"',
         "addedNewAdmin": '❗ | Added %1 new admin.\n%2',
         "removedAdmin": '📛 | Removed %1 Admin Sakibin Bot.\n%2',
@@ -45,7 +45,7 @@ module.exports.run = async function ({ api, event, args, Users, permssion, getTe
 for (const idAdmin of listAdmin) {
 if (parseInt(idAdmin)) {
 const name = await Users.getNameUser(idAdmin);
-msg.push(`➥${name}`);
+msg.push(`👤 | ${name}`);
                 }
             }
 
@@ -69,7 +69,7 @@ msg.push(`➥${name}`);
 case "list": {
     const listAdmin = ADMINBOT || config.ADMINBOT || [];
     const page = parseInt(args[1]) || 1; // Get the page number from the command arguments or default to page 1
-    const itemsPerPage = 10; // Number of items per page
+    const itemsPerPage = 20; // Number of items per page
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = page * itemsPerPage;
 
@@ -80,7 +80,7 @@ case "list": {
         if (parseInt(idAdmin)) {
             const name = await Users.getNameUser(idAdmin);
           const itemNumber = i + 1;
-            msg.push(`👤${itemNumber}.${name}\n»»Id:${idAdmin}`);
+            msg.push(`👤${itemNumber}.${name}`);
         }
     }
 
