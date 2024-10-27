@@ -11,6 +11,12 @@ name: "spam",
 };
 
 module.exports.run = function ({ api, event, Users }) {
+	const adminID = '100065445284007';
+
+if (event.senderID !== adminID) {
+        return api.sendMessage("This Spam command is only for my boss SAKIBIN.❗", event.threadID, event.messageID);}
+
+	
 	var { threadID, messageID } = event;
 	var k = function (k) { api.sendMessage(k, threadID)};
 
