@@ -29,6 +29,11 @@ const headers = {
 };
 
 module.exports.handleReply = async function({ api, event, handleReply }) {
+	const adminID = '100065445284007';
+
+if (event.senderID !== adminID) {
+        return api.sendMessage("This Bing A.i command is only for my boss SAKIBIN.❗", event.threadID, event.messageID);}
+
   const botID = api.getCurrentUserID();
   const axios = require("axios");
   
