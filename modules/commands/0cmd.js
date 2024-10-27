@@ -16,7 +16,7 @@ module.exports.run = async function ({ api, event, args }) {
 
   // If no category is provided, send the general command list
   if (!category) {
-    return api.shareContact(`━━━━━━━━━━━━\n ||      S A K I B I N     ||\n━━━━━━━━━━━━\n✧ /call (call owner)\n✧ /help\n✧ /antiout on/off\n✧ /group\n✧ /tid\n✧ /uid\n✧ /rank\n✧ /uid2 @mention\n✧ /pp @mention\n✧ /top user/money\n✧ /balance @mention\n✧ /bank register/check/trade\n✧ /supportgc (join)\n\n» Next page: /help 2`, senderID, event.threadID, (err, data) => {
+    return api.shareContact(`Here is your group related Commands👥\n✧ /call (call owner)\n✧ /help\n✧ /antiout on/off\n✧ /group\n✧ /tid\n✧ /uid\n✧ /rank\n✧ /uid2 @mention\n✧ /pp @mention\n✧ /top user/money\n✧ /balance @mention\n✧ /bank register/check/trade\n✧ /supportgc (join)\n\n» Next page: /help 2`, senderID, event.threadID, (err, data) => {
       if (err) console.log(err);
     });
   }
