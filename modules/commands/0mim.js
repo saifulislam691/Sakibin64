@@ -20,10 +20,32 @@ async function downloadVideo(videoUrl, threadID, api) {
       const videoData = response.data.data;
       const videoTitle = videoData.title;
       const videoDownloadUrl = videoData.low;
-
       const videoPath = path.resolve(__dirname, 'cache', `${videoTitle}.mp4`);
-      const videoStream = fs.createWriteStream(videoPath);
 
+      // Send loading animation
+      const loadingMessages = [`Downloading...\n████▒▒▒▒▒▒ 31%`,
+`Downloading...\n██████▒▒▒▒ 59%`,
+`Downloading...\n███████▒▒▒ 73%`,
+`Downloading...\n█████████▒ 88%`];
+      let loadingMessageID;
+      let currentStep = 0;
+
+      const updateLoadingMessage = () => {
+        if (currentStep < loadingMessages.length) {
+          api.editMessage(loadingMessages[currentStep], threadID, loadingMessageID);
+          currentStep++;
+          setTimeout(updateLoadingMessage, 1000); // 1 second for each step
+        }
+      };
+
+      api.sendMessage(loadingMessages[currentStep], threadID, (err, info) => {
+        if (err) return console.error(err);
+        loadingMessageID = info.messageID;
+        currentStep++;
+        setTimeout(updateLoadingMessage, 1000); // Start loading animation
+      });
+
+      const videoStream = fs.createWriteStream(videoPath);
       const videoResponse = await axios({
         url: videoDownloadUrl,
         method: 'GET',
@@ -33,6 +55,10 @@ async function downloadVideo(videoUrl, threadID, api) {
       videoResponse.data.pipe(videoStream);
 
       videoStream.on('finish', () => {
+        // Remove loading message
+        api.unsendMessage(loadingMessageID);
+
+        // Send the downloaded video
         api.sendMessage({
           body: `Here is your downloaded video: ${videoTitle}`,
           attachment: fs.createReadStream(videoPath),
@@ -75,7 +101,7 @@ module.exports.handleEvent = async function({ api, event }) {
     const videoUrl = match[0]; // Take the first matched URL
 
     // Notify the user and ask them to react to the message to start the download
-    api.sendMessage("Video Link ditected 🔗\nReact 👍 to download video", threadID, (error, messageInfo) => {
+    api.sendMessage("Video Link detected 🔗\nReact 👍 to download video", threadID, (error, messageInfo) => {
       if (error) return console.error(error);
 
       // Store the reaction handler data
