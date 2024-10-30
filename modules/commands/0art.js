@@ -1,64 +1,74 @@
-const axios = require('axios');
+const axios = require("axios");
 
-const baseApiUrl = async () => {
-  const base = await axios.get(
-    `https://raw.githubusercontent.com/Blankid018/D1PT0/main/baseApiUrl.json`
-  );
-  return base.data.api;
-};
-
-(module.exports = {
+module.exports = {
   config: {
     name: "art",
-    version: "1.6.9",
-    credits: "Nazrul",
-    hasPermission: 0,
-    description: "{pn} - Enhance your photos with  artful transformations!",
-    Prefix: true,
-    usePrefix: true,
-    commandCategory: "art",
+    version: "1.0",
+    credits: "rehat--",
+    description: "Text to Image with customizable styles and presets",
+    commandCategory: "ai",
     cooldowns: 5,
-    usages:"{pn} reply to a image"
+    usages: "{pn} <prompt> --ar [ratio], [preset], [style] or reply to an image",
+    hasPermission: 0,
   },
 
-  run: async function ({ message, event, args, api }) {
+  run: async function({ api, event, args, message }) {
     try {
-      const cp = ["bal","zombie","anime","ghost", "watercolor", "sketch", "abstract", "cartoon","monster"];
-      const prompts = args[0] || cp[Math.floor(Math.random() * cp.length)];
+      let prompt = "";
+      let style = "";
+      let imageUrl = "";
+      let preset = "";
+      let aspectRatio = "";
 
-      const msg = await api.sendMessage("🎨 Processing your image, please wait...", event.threadID);
+      const styleIndex = args.indexOf("--style");
+      if (styleIndex !== -1 && args.length > styleIndex + 1) {
+        style = args[styleIndex + 1];
+        args.splice(styleIndex, 2);
+      }
 
-      let photoUrl = "";
+      const presetIndex = args.indexOf("--preset");
+      if (presetIndex !== -1 && args.length > presetIndex + 1) {
+        preset = args[presetIndex + 1];
+        args.splice(presetIndex, 2);
+      }
+
+      const aspectIndex = args.indexOf("--ar");
+      if (aspectIndex !== -1 && args.length > aspectIndex + 1) {
+        aspectRatio = args[aspectIndex + 1];
+        args.splice(aspectIndex, 2);
+      }
 
       if (event.type === "message_reply" && event.messageReply?.attachments?.length > 0) {
-        photoUrl = event.messageReply.attachments[0].url;
-      } else if (args.length > 0) {
-        photoUrl = args.join(' ');
+        imageUrl = encodeURIComponent(event.messageReply.attachments[0].url);
+      } else if (args.length === 0) {
+        return api.sendMessage("Please provide a prompt or reply to an image.", event.threadID, event.messageID);
       }
 
-      if (!photoUrl) {
-        return api.sendMessage("🔰 Please reply to an image or provide a URL!", event.threadID, event.messageID);
+      if (args.length > 0) {
+        prompt = args.join(" ");
       }
 
-      const response = await axios.get(`${await baseApiUrl()}/art2?url=${encodeURIComponent(photoUrl)}&prompt=${encodeURIComponent(prompts)}`);
-
-      if (!response.data || !response.data.imageUrl) {
-        await api.sendMessage("⚠ Failed to return a valid image URL. Please try again.", event.threadID, event.messageID);
-        return;
+      let apiUrl = `https://rehatdesu.xyz/api/imagine/niji?prompt=${encodeURIComponent(prompt)}&aspectRatio=${aspectRatio}&style=${style}&preset=${preset}&apikey=sumu`;
+      if (imageUrl) {
+        apiUrl += `&imageUrl=${imageUrl}`;
       }
 
-      const imageUrl = response.data.imageUrl;
-      await api.unsendMessage(msg.messageID);
+      const processingMessage = await api.sendMessage("Please wait...⏳", event.threadID, event.messageID);
 
-      const imageStream = await axios.get(imageUrl, { responseType: 'stream' });
+      const response = await axios.post(apiUrl);
+      const img = response.data.url;
 
-      await api.sendMessage({ 
-        body: `Here's your artful image! 🎨`, 
-        attachment: imageStream.data 
+      await api.unsendMessage(processingMessage.messageID);
+      const imageStream = await axios.get(img, { responseType: 'stream' });
+
+      await api.sendMessage({
+        body: `Here’s your artful transformation! 🎨`,
+        attachment: imageStream.data
       }, event.threadID, event.messageID);
 
     } catch (error) {
-      await api.sendMessage(`Error: ${error.message}`, event.threadID, event.messageID);
+      console.error(error);
+      api.sendMessage("An error occurred.", event.threadID, event.messageID);
     }
   }
-});
+};
