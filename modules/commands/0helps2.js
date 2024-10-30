@@ -15,7 +15,7 @@ module.exports.config = { usePrefix: true,
 
 module.exports.languages = {
 	"en": {
-		"moduleInfo": "「 %1 」\n%2\n\n🛂 Usage: %3\n📝 Category: %4\n⏳ Waiting time: %5 seconds(s)\n🔰 Permission: %6\n\n» Module make by 🌸SAKIBIN «",
+		"moduleInfo": "「 %1 」\n%2\n\n🛂 Usage: %3\n📝 Category: %4\n⏳ Waiting time: %5 seconds(s)\n🔰 Permission: %6\n\n» Module by @Sakibin «",
 		"helpList": '[ There are %1 commands on this bot, Use: "%2help nameCommand" to know how to use! ]',
 		"user": "User",
         "adminGroup": "Admin group",
@@ -52,7 +52,7 @@ module.exports. run = function({ api, event, args, getText }) {
     let msg = "➣ Simple Command list✓\n";
     
     for (var [name, value] of (commands)) {
-      name += ` ${value.config.usages}`;
+      name += ` 〕`;
       arrayInfo.push(name);
     }
 
@@ -62,7 +62,7 @@ module.exports. run = function({ api, event, args, getText }) {
     i = startSlice;
     const returnArray = arrayInfo.slice(startSlice,startSlice+numberOfOnePage);
     
-    for (let item of returnArray) msg +=`➥${++i}. ${prefix}${item}\n`;
+    for (let item of returnArray) msg +=`〔 ${++i}. ${prefix}${item}\n`;
     const randomText = [ `❍ADMIN: ${prefix}call`,`❍ADMIN: ${prefix}info`,];
      const text = `\n❍Use: ${prefix}help (cmdname!)\nUse: ${prefix}help (pagenumber!)\n❍Total: ${arrayInfo.length} CMD!\n${randomText[Math.floor(Math.random()*randomText.length)]}\n🄿🄰🄶🄴 »${page}/${Math.ceil(arrayInfo.length/numberOfOnePage)}« 🄻🄸🅂🅃`;
     return api.sendMessage(msg + text, threadID, async (error, info) => {
