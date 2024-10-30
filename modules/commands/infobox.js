@@ -5,7 +5,7 @@ const fontsInfo = 33
 const fontsOthers = 27
 const colorName = "#00FFFF"
 module.exports.config = { usePrefix: true,
-  name: "groupinfo",
+  name: "groupinfo2",
   version: "2.0.0",
   hasPermssion: 0,
   credits: "D-Jukie",
