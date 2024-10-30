@@ -27,7 +27,7 @@ module.exports.run = async ({ api, event, args }) => {
         const response = await axios.get(apiUrl);
         const result = response.data.reply;
 
-        await api.editMessage(`𝗔𝗜 𝗥𝗲𝘀𝗽𝗼𝗻𝘀𝗲\n━━━━━━━━━━━━━━━━━━\n${result}\n━━━━━━━━━━━━━━━━━━`, processingMessage.messageID);
+        await api.editMessage(`𝗔𝗜 𝗥𝗲𝘀𝗽𝗼𝗻𝘀𝗲\n${result}`, processingMessage.messageID);
 
         global.client.handleReply.push({
             name: this.config.name,
